@@ -1,0 +1,4 @@
+#[derive(Clone,Debug)]
+pub struct Memory { data: Vec<u8> }
+impl Memory { pub fn new(size:usize)->Self{Self{data:vec![0;size]}} pub fn len(&self)->usize{self.data.len()} pub fn read(&self,offset:usize,out:&mut [u8])->Result<(),&'static str>{if offset>self.data.len()||out.len()>self.data.len()-offset{return Err("out of bounds")}out.copy_from_slice(&self.data[offset..offset+out.len()]);Ok(())} pub fn write(&mut self,offset:usize,input:&[u8])->Result<(),&'static str>{if offset>self.data.len()||input.len()>self.data.len()-offset{return Err("out of bounds")}self.data[offset..offset+input.len()].copy_from_slice(input);Ok(())} }
+#[cfg(test)] mod tests{use super::*;#[test]fn memory(){let mut m=Memory::new(8);assert!(m.write(2,&[1,2]).is_ok());let mut x=[0;2];assert!(m.read(2,&mut x).is_ok());assert_eq!(x,[1,2]);}}
